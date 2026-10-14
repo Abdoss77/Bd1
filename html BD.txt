@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Matrix Studio Série — 20 styles × 20 personnages</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0a0a12;--panel:#16161f;--panel2:#1e1e2b;--border:#2a2a3a;--ink:#e8e6e0;--dim:#8a8896;--faint:#4a4858;--y:#e5c15a;--o:#e87b35;--b:#4a7bc8;--p:#8b5fc4;--mint:#a8d8c8;--ok:#4a9d6a;--err:#c85a4a;--warn:#d4a017;--r:6px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:1rem 0.8rem 8rem;font-size:14px;line-height:1.5;max-width:960px;margin:0 auto}
+header{text-align:center;padding:0.8rem 0 1.2rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+h1{font-size:1.4rem;font-weight:500;background:linear-gradient(135deg,var(--o),var(--y),var(--mint),var(--p));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.3rem}
+.sub{font-size:0.75rem;color:var(--dim);font-style:italic}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:1rem;margin-bottom:0.8rem}
+.card h2{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--dim);margin-bottom:0.7rem;font-weight:700}
+input,textarea,select{width:100%;padding:0.7rem 0.9rem;border-radius:var(--r);border:1px solid var(--border);background:#0c1220;color:var(--ink);font-family:inherit;font-size:0.85rem;margin-bottom:0.5rem}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--y)}
+textarea{resize:vertical;min-height:60px;line-height:1.4}
+button{width:100%;padding:0.8rem;border-radius:var(--r);border:1px solid var(--y);background:linear-gradient(135deg,rgba(232,123,53,.2),rgba(229,193,90,.15));color:var(--y);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;font-size:0.78rem;cursor:pointer;margin-bottom:0.5rem;font-family:inherit}
+button:disabled{opacity:0.3;cursor:not-allowed}
+button.sec{background:transparent;border-color:var(--border);color:var(--dim)}
+button.danger{background:transparent;border-color:var(--err);color:var(--err)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.4rem;margin-top:0.5rem}
+.item{padding:0.5rem;border:1px solid var(--border);border-radius:var(--r);background:#0c1220;cursor:pointer;font-size:0.72rem;transition:.15s}
+.item:hover{border-color:var(--y)}
+.item.sel{background:linear-gradient(135deg,rgba(229,193,90,.15),rgba(232,123,53,.1));border-color:var(--y);color:var(--y)}
+.thumb{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:0.4rem;margin-top:0.6rem}
+.tc{position:relative;aspect-ratio:9/16;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);background:#000}
+.tc img{width:100%;height:100%;object-fit:cover;display:block}
+.tc.sel{border-color:var(--y);box-shadow:0 0 0 2px var(--y)}
+.tc .badge{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px}
+.tc.sel .badge{background:var(--y);color:#000;border-color:var(--y)}
+.log{background:#05050a;border:1px solid var(--border);border-radius:var(--r);padding:0.5rem;height:200px;overflow-y:auto;font-family:ui-monospace,monospace;font-size:0.68rem;line-height:1.5}
+.log .l{padding:0.15rem 0;color:#c8c8d0;word-break:break-word}
+.log .ok{color:var(--ok)}.log .err{color:var(--err)}.log .warn{color:var(--warn)}.log .api{color:var(--b)}
+.status{position:fixed;bottom:0;left:0;right:0;background:var(--panel2);border-top:1px solid var(--border);padding:0.7rem;font-size:0.75rem;text-align:center;transform:translateY(100%);transition:.3s;z-index:100;font-family:ui-monospace,monospace}
+.status.on{transform:translateY(0)}
+.toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--y);padding:0.7rem 1.2rem;border-radius:var(--r);font-size:0.8rem;z-index:1000;opacity:0;transition:.35s;max-width:90vw}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.ok{border-left-color:var(--ok)}.toast.err{border-left-color:var(--err)}.toast.warn{border-left-color:var(--warn)}
+.hide{display:none!important}
+.pill{display:inline-block;padding:0.2rem 0.5rem;border-radius:99px;background:#0c1220;border:1px solid var(--border);font-size:0.65rem;color:var(--dim);margin-right:0.3rem;margin-bottom:0.3rem;font-family:ui-monospace,monospace}
+.ep{background:#0c1220;border:1px solid var(--border);border-radius:var(--r);padding:0.6rem;margin-bottom:0.4rem;font-size:0.72rem}
+.ep strong{color:var(--y)}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Matrix Studio Série</h1>
+<p class="sub">20 styles Agnes × 20 personnages Instagram → BD en série → vidéos 15s</p>
+</header>
+
+<div class="card">
+<h2>🔑 Clé API Agnes</h2>
+<input type="password" id="key" placeholder="sk-..." autocomplete="off" spellcheck="false">
+<button id="saveKey">Enregistrer la clé</button>
+<div style="font-size:0.72rem;color:var(--dim);text-align:center;margin-top:0.3rem" id="keyStatus">Aucune clé enregistrée</div>
+</div>
+
+<div class="card">
+<h2>📖 Mode Série</h2>
+<select id="seriesMode">
+<option value="single">Une seule planche BD</option>
+<option value="series" selected>Mode Série — plusieurs épisodes enchaînés</option>
+</select>
+<div style="font-size:0.72rem;color:var(--dim);margin-top:0.3rem">En mode Série, chaque épisode utilise 5 images de la matrice. Tu peux enchaîner autant d'épisodes que tu veux avec le même style et les mêmes personnages.</div>
+<input type="text" id="seriesTitle" placeholder="Titre de la série (ex : Les aventures de Gojo)" value="Ma Série BD">
+</div>
+
+<div class="card">
+<h2>⚙️ Configuration de la matrice</h2>
+<select id="matrixSize">
+<option value="5x5">5 styles × 5 personnages = 25 images</option>
+<option value="10x10">10 styles × 10 personnages = 100 images</option>
+<option value="20x10" selected>20 styles × 10 personnages = 200 images</option>
+<option value="20x20">20 styles × 20 personnages = 400 images</option>
+</select>
+<button id="genMatrix">🚀 Générer la matrice</button>
+<button class="sec" id="stopMatrix">⏹ Arrêter</button>
+</div>
+
+<div class="card">
+<h2>🎨 Styles Agnes (20 vérifiés)</h2>
+<div class="grid" id="stylesGrid"></div>
+</div>
+
+<div class="card">
+<h2>👥 Personnages Instagram (20 populaires)</h2>
+<div class="grid" id="charsGrid"></div>
+</div>
+
+<div class="card" id="matrixCard" style="display:none">
+<h2>🖼️ Matrice générée — <span id="matrixCount" style="color:var(--y)">0</span> / <span id="matrixTotal">0</span></h2>
+<div class="thumb" id="matrixThumb"></div>
+</div>
+
+<div class="card" id="bdCard" style="display:none">
+<h2>📖 Construire la BD</h2>
+<div style="font-size:0.72rem;color:var(--dim);margin-bottom:0.5rem">Sélectionne 5 images minimum pour former un épisode.</div>
+<div style="font-size:0.75rem;color:var(--y);margin-bottom:0.5rem">Sélectionnées : <span id="selCount">0</span> / 5 minimum</div>
+<button id="genBD" disabled>📚 Générer l'épisode BD</button>
+</div>
+
+<div class="card" id="bdResultCard" style="display:none">
+<h2>📚 Épisodes générés</h2>
+<div id="bdResult"></div>
+<button id="nextEpisode">➕ Épisode suivant (même série)</button>
+<button id="genVideos">🎬 Créer les vidéos 15s du dernier épisode</button>
+</div>
+
+<div class="card" id="historyCard" style="display:none">
+<h2>📜 Historique de la série</h2>
+<div id="historyList"></div>
+</div>
+
+<div class="card">
+<h2>📋 Console de débogage</h2>
+<div class="log" id="log"></div>
+</div>
+
+<div class="status" id="status">Préparation…</div>
+<div class="toast" id="toast"></div><script>
+const API='https://apihub.agnes-ai.com/v1';
+const POLL='https://apihub.agnes-ai.com/agnesapi';
+const MT='agnes-2.5-flash';
+const MI='agnes-image-2.1-flash';
+const MV='agnes-video-v2.0';
+const FPS=24;
+const IMG_PARALLEL=3;
+const IMG_GAP=3400;
+const VID_GAP=62000;
+const VID_POLL=[8,8,12,12,20,20,25];
+const VID_FIRST_WAIT=80;
+const K_STORE='agnes_key_matrix';
+const K_TIME='agnes_time_matrix';
+
+const STYLES=[
+{id:'cinematic',n:'Cinématique',e:'🎬',p:'cinematic film look, dramatic lighting, subtle film grain, shallow depth of field, professional color grading'},
+{id:'golden',n:'Golden Hour',e:'🌅',p:'golden hour warm sunlight, soft amber glow, long shadows, hazy warm tones'},
+{id:'backlight',n:'Contre-jour',e:'💡',p:'dramatic backlight, glowing rim light around subject, halo of light, lens flare'},
+{id:'rim',n:'Rim Light',e:'✨',p:'rim light portrait, edges of subject glowing, dark background, high contrast'},
+{id:'cyberpunk',n:'Cyberpunk',e:'🌃',p:'cyberpunk aesthetic, neon pink and cyan lighting, holographic ads, Blade Runner atmosphere'},
+{id:'watercolor',n:'Aquarelle',e:'🎨',p:'watercolor painting, soft bleeding edges, translucent washes, paper texture'},
+{id:'oil',n:'Huile',e:'🖼️',p:'classical oil painting, visible impasto brushstrokes, old master technique'},
+{id:'ukiyoe',n:'Ukiyo-e',e:'🗾',p:'traditional Japanese ukiyo-e woodblock print style, flat colors, bold outlines'},
+{id:'anime',n:'Anime Cel',e:'🌸',p:'anime cel-shaded style, vibrant flat colors, clean outlines, expressive eyes'},
+{id:'photo',n:'Photorealistic',e:'📷',p:'ultra realistic photograph, 8K detail, natural lighting, sharp focus'},
+{id:'noir',n:'Film Noir',e:'🕵️',p:'classic film noir, high contrast black and white, chiaroscuro shadows, 1940s'},
+{id:'pastel',n:'Pastel Dream',e:'🌸',p:'soft pastel color palette, dreamy diffused light, romantic atmosphere'},
+{id:'contrast',n:'Contraste Élevé',e:'🌓',p:'high contrast dramatic lighting, deep blacks, chiaroscuro effect'},
+{id:'dof',n:'Bokeh Profond',e:'🔮',p:'shallow depth of field, beautiful bokeh, subject sharp, blurred lights'},
+{id:'mist',n:'Brume',e:'🌫️',p:'atmospheric mist, soft haze, diffused glowing light, ethereal atmosphere'},
+{id:'retro',n:'Vintage',e:'📽️',p:'vintage 1970s film aesthetic, grainy texture, warm faded colors, kodachrome'},
+{id:'neon',n:'Néon Urbain',e:'🌆',p:'neon-soaked urban night, colorful reflections, magenta and cyan accents'},
+{id:'product',n:'Studio Produit',e:'📦',p:'clean product photography, studio background, commercial quality'},
+{id:'poster',n:'Affiche',e:'🖼️',p:'graphic poster style, bold composition, limited color palette, art deco'},
+{id:'pixar',n:'Pixar 3D',e:'✨',p:'high quality 3D computer animation, Pixar-style rendering, cinematic lighting'}
+];
+
+const CHARS=[
+{id:'spiderman',n:'Spider-Man',e:'🕷️',p:'Spider-Man, red and blue webbed suit, masked hero, agile pose'},
+{id:'harley',n:'Harley Quinn',e:'💥',p:'Harley Quinn, red and black pigtails, jester outfit, mischievous smile'},
+{id:'batman',n:'Batman',e:'🦇',p:'Batman, black cape and cowl, dark brooding figure, Gotham'},
+{id:'joker',n:'Joker',e:'🃏',p:'Joker, green hair, white face paint, red smile, purple suit'},
+{id:'wonder',n:'Wonder Woman',e:'⚔️',p:'Wonder Woman, golden tiara, red and blue armor, powerful stance'},
+{id:'naruto',n:'Naruto',e:'🍥',p:'Naruto Uzumaki, orange jumpsuit, blond spiky hair, headband'},
+{id:'gojo',n:'Gojo Satoru',e:'👁️',p:'Gojo Satoru, white hair, black blindfold, Jujutsu Kaisen uniform'},
+{id:'luffy',n:'Luffy',e:'🏴‍☠️',p:'Monkey D. Luffy, straw hat, red vest, big smile, One Piece'},
+{id:'levi',n:'Levi Ackerman',e:'🗡️',p:'Levi Ackerman, short black hair, sharp eyes, Survey Corps'},
+{id:'rengoku',n:'Rengoku',e:'🔥',p:'Kyojuro Rengoku, flame pattern haori, bright smile, Demon Slayer'},
+{id:'gon',n:'Gon Freecss',e:'🎣',p:'Gon Freecss, green spiky hair, fishing rod, Hunter x Hunter'},
+{id:'allmight',n:'All Might',e:'💪',p:'All Might, muscular hero, blond hair, blue and red costume'},
+{id:'harry',n:'Harry Potter',e:'⚡',p:'Harry Potter, round glasses, scar, Hogwarts robe, magic wand'},
+{id:'barbie',n:'Barbie',e:'💖',p:'Barbie doll aesthetic, blonde hair, pink outfit, glamorous pose'},
+{id:'ariel',n:'Ariel',e:'🧜‍♀️',p:'Ariel from Little Mermaid, red hair, teal tail, underwater scene'},
+{id:'geralt',n:'Geralt',e:'🐺',p:'Geralt of Rivia, white hair, cat eyes, leather armor, Witcher'},
+{id:'anya',n:'Anya Forger',e:'🥜',p:'Anya Forger, pink hair, black dress, cute smile, Spy x Family'},
+{id:'goku',n:'Goku',e:'⚡',p:'Son Goku, orange gi, black spiky hair, Dragon Ball'},
+{id:'sailor',n:'Sailor Moon',e:'🌙',p:'Sailor Moon, blonde pigtails, sailor uniform, magical girl'},
+{id:'neytiri',n:'Neytiri',e:'🌿',p:'Neytiri from Avatar, blue skin, Na\'vi features, tribal dress'}
+];
+
+const S={styles:[],chars:[],matrix:[],selected:new Set(),bdImages:[],videos:[],running:false,stop:false,key:'',series:[],currentEpisode:0};
+let imgGap=IMG_GAP,vidGap=VID_GAP,imgErrC=0,vidErrC=0;
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function toast(msg,type='ok',dur=2500){const t=document.getElementById('toast');t.className='toast on '+type;t.textContent=msg;setTimeout(()=>t.className='toast '+type,dur)}
+function setStatus(t){const s=document.getElementById('status');if(t){s.classList.add('on');s.textContent=t}else{s.classList.remove('on')}}
+function log(msg,type=''){const el=document.getElementById('log');const time=new Date().toLocaleTimeString('fr-FR',{hour12:false});const d=document.createElement('div');d.className='l '+type;d.textContent='['+time+'] '+msg;el.appendChild(d);el.scrollTop=el.scrollHeight;while(el.children.length>400)el.removeChild(el.firstChild);console.log('[Matrix]',msg)}
+
+function getKey(){try{return(localStorage.getItem(K_STORE)||'').trim()}catch(e){return''}}
+function saveKey(){const v=document.getElementById('key').value.trim();if(!v){localStorage.removeItem(K_STORE);updateKeyUI();toast('Clé supprimée','warn');return}localStorage.setItem(K_STORE,v);S.key=v;updateKeyUI();toast('Clé enregistrée ✓','ok');log('Clé API sauvegardée','ok')}
+function updateKeyUI(){const k=getKey();const s=document.getElementById('keyStatus');if(k){s.textContent='✓ Active · '+k.slice(0,8)+'…'+k.slice(-4);s.style.color='var(--ok)';document.getElementById('key').value=k}else{s.textContent='Aucune clé';s.style.color='var(--dim)'}}
+
+function loadTimes(){try{return JSON.parse(localStorage.getItem(K_TIME)||'{}')}catch(e){return{}}}
+function saveTimes(t){try{localStorage.setItem(K_TIME,JSON.stringify(t))}catch(e){}}
+function recordTime(k,ms){const t=loadTimes();if(!t[k])t[k]=[];t[k].push(ms);if(t[k].length>10)t[k]=t[k].slice(-10);saveTimes(t)}
+function estTime(k,fb){const t=loadTimes();const s=t[k];if(s&&s.length){const so=[...s].sort((a,b)=>a-b);const m=Math.floor(so.length/2);return so.length%2===0?(so[m-1]+so[m])/2:so[m]}return fb}
+
+function renderStyles(){const g=document.getElementById('stylesGrid');g.innerHTML=STYLES.map(s=>'<div class="item '+(S.styles.includes(s.id)?'sel':'')+'" data-s="'+s.id+'">'+s.e+' '+esc(s.n)+'</div>').join('');g.querySelectorAll('[data-s]').forEach(el=>el.onclick=()=>{const id=el.dataset.s;const i=S.styles.indexOf(id);if(i>=0)S.styles.splice(i,1);else S.styles.push(id);renderStyles();updateBtn()})}
+function renderChars(){const g=document.getElementById('charsGrid');g.innerHTML=CHARS.map(c=>'<div class="item '+(S.chars.includes(c.id)?'sel':'')+'" data-c="'+c.id+'">'+c.e+' '+esc(c.n)+'</div>').join('');g.querySelectorAll('[data-c]').forEach(el=>el.onclick=()=>{const id=el.dataset.c;const i=S.chars.indexOf(id);if(i>=0)S.chars.splice(i,1);else S.chars.push(id);renderChars();updateBtn()})}
+
+function updateBtn(){const b=document.getElementById('genMatrix');b.disabled=S.running||!S.styles.length||!S.chars.length||!getKey();if(S.running)b.textContent='Génération en cours…';else if(!getKey())b.textContent='Ajoutez une clé API';else if(!S.styles.length||!S.chars.length)b.textContent='Sélectionnez styles et personnages';else b.textContent='🚀 Générer la matrice ('+(S.styles.length*S.chars.length)+' images)'}
+
+async function apiFetch(url,options={},label='API',kind='default'){
+for(let attempt=0;attempt<7;attempt++){
+if(S.stop)throw new Error('Arrêt demandé');
+try{
+const res=await fetch(url,options);
+if(res.status===429){
+if(kind==='image'&&imgGap<12000)imgGap=Math.min(imgGap+1500,12000);
+const wait=[10,20,35,50,75,100,150][Math.min(attempt,6)];
+log(label+' : 429 → attente '+wait+'s','warn');
+setStatus('L\'IA se prépare… ('+wait+'s)');
+await sleep(wait*1000);continue;
+}
+if(res.status===503){
+const wait=[5,10,15,20,30,45][Math.min(attempt,5)];
+log(label+' : 503 → attente '+wait+'s','warn');
+await sleep(wait*1000);continue;
+}
+return res;
+}catch(e){
+if(e.message==='Arrêt demandé')throw e;
+const wait=[3,5,8,12,20,30][Math.min(attempt,5)];
+log(label+' : réseau → retry '+wait+'s','warn');
+await sleep(wait*1000);
+}
+}
+return fetch(url,options);
+}
+
+async function callText(messages,opt={}){
+const body={model:MT,messages,temperature:opt.temp??0.85,max_tokens:opt.max??4000};
+log('Requête texte → '+MT,'api');
+const res=await apiFetch(API+'/chat/completions',{method:'POST',headers:{'Authorization':'Bearer '+getKey(),'Content-Type':'application/json'},body:JSON.stringify(body)},'Texte','text');
+if(!res.ok){const err=await res.text();throw new Error('HTTP '+res.status+' — '+err.slice(0,200))}
+const d=await res.json();
+return d.choices?.[0]?.message?.content||'';
+}
+
+async function callImage(prompt,size='1024x1792'){
+log('Requête image → '+MI,'api');
+const body={model:MI,prompt,n:1,size,response_format:'url'};
+const res=await apiFetch(API+'/images/generations',{method:'POST',headers:{'Authorization':'Bearer '+getKey(),'Content-Type':'application/json'},body:JSON.stringify(body)},'Image','image');
+if(!res.ok){const err=await res.text();throw new Error('HTTP '+res.status+' — '+err.slice(0,200))}
+const d=await res.json();
+const item=d.data?.[0];
+if(!item)throw new Error('Pas de donnée image');
+return item.url||('data:image/png;base64,'+item.b64_json);
+}
+
+async function createVideo(imageUrl,lastUrl,prompt,frames=360){
+const body={model:MV,prompt,image:imageUrl,last_frame:lastUrl,num_frames:frames,frame_rate:FPS};
+const res=await apiFetch(API+'/videos',{method:'POST',headers:{'Authorization':'Bearer '+getKey(),'Content-Type':'application/json'},body:JSON.stringify(body)},'Vidéo','video');
+if(!res.ok){const err=await res.text();throw new Error('HTTP '+res.status+' — '+err.slice(0,200))}
+const d=await res.json();
+const id=d.video_id||d.id||d.task_id;
+if(!id)throw new Error('Pas de video_id');
+return id;
+}
+
+async function pollVideo(videoId,onProgress){
+let wait=VID_FIRST_WAIT;
+while(wait>0&&!S.stop){onProgress('Préparation — '+wait+'s');await sleep(1000);wait--}
+for(let i=0;i<100;i++){
+if(S.stop)throw new Error('Arrêt demandé');
+if(i>0){let r=VID_POLL[Math.min(i-1,VID_POLL.length-1)];while(r>0&&!S.stop){onProgress('En cours — '+r+'s');await sleep(1000);r--}}
+const url=POLL+'?video_id='+encodeURIComponent(videoId)+'&model_name='+encodeURIComponent(MV);
+const res=await apiFetch(url,{method:'GET',headers:{'Authorization':'Bearer '+getKey()}},'Polling','video');
+const d=await res.json();
+const st=d.status||'unknown';
+const pr=d.progress||0;
+onProgress('Création — '+pr+'%');
+if(st==='completed'||st==='succeeded'||st==='done'){
+const u=(d.metadata&&d.metadata.url)||d.url||(d.output&&d.output.url);
+if(!u)throw new Error('Terminé mais pas d\'URL');
+return u;
+}
+if(st==='failed'||st==='error'||st==='cancelled')throw new Error('Échec ('+st+')');
+}
+throw new Error('Délai dépassé');
+}
+
+function createQueue(maxC,minI){
+let running=0,lastStart=0,resolveIdle=null;
+const q=[];
+function next(){
+if(running>=maxC)return;
+if(!q.length){if(running===0&&resolveIdle){resolveIdle();resolveIdle=null}return}
+const now=Date.now();
+const wait=Math.max(0,lastStart+minI-now);
+if(wait>0){setTimeout(next,wait);return}
+const t=q.shift();
+running++;
+lastStart=Date.now();
+t().finally(()=>{running--;setTimeout(next,0)});
+}
+return{
+add(fn){return new Promise((res,rej)=>{q.push(()=>fn().then(res,rej));setTimeout(next,0)})},
+idle(){return new Promise(r=>{if(running===0&&!q.length)return r();resolveIdle=r})}
+};
+}
+
+async function generateMatrix(){
+if(S.running)return;
+if(!getKey()){toast('Ajoutez une clé API','err');return}
+if(!S.styles.length||!S.chars.length){toast('Sélectionnez styles et personnages','err');return}
+S.running=true;S.stop=false;S.matrix=[];
+document.getElementById('genMatrix').disabled=true;
+document.getElementById('stopMatrix').style.display='block';
+document.getElementById('matrixCard').style.display='block';
+document.getElementById('matrixThumb').innerHTML='';
+const total=S.styles.length*S.chars.length;
+document.getElementById('matrixTotal').textContent=total;
+document.getElementById('matrixCount').textContent='0';
+log('Démarrage matrice : '+total+' images','ok');
+setStatus('Génération de la matrice…');
+const q=createQueue(IMG_PARALLEL,imgGap);
+let done=0;
+const tasks=[];
+for(const sId of S.styles){
+const style=STYLES.find(x=>x.id===sId);
+for(const cId of S.chars){
+const char=CHARS.find(x=>x.id===cId);
+const prompt=style.p+' | '+char.p+' | portrait 9:16 vertical, high quality, no text';
+tasks.push(q.add(async()=>{
+if(S.stop)return;
+try{
+const url=await callImage(prompt);
+const item={style:style.id,char:char.id,styleName:style.n,charName:char.n,url,ts:Date.now()};
+S.matrix.push(item);
+addThumb(item);
+done++;
+document.getElementById('matrixCount').textContent=done;
+log('Image '+done+'/'+total+' : '+style.n+' × '+char.n,'ok');
+setStatus('Matrice : '+done+'/'+total);
+}catch(e){
+if(e.message==='Arrêt demandé')return;
+log('Erreur '+style.n+' × '+char.n+' : '+e.message,'err');
+}
+}));
+}
+}
+await Promise.allSettled(tasks);
+await q.idle();
+S.running=false;
+document.getElementById('genMatrix').disabled=false;
+document.getElementById('stopMatrix').style.display='none';
+document.getElementById('bdCard').style.display='block';
+setStatus('Matrice terminée : '+S.matrix.length+'/'+total);
+toast(S.matrix.length+' images générées','ok',3500);
+}
+
+function addThumb(item){
+const g=document.getElementById('matrixThumb');
+const d=document.createElement('div');
+d.className='tc';
+d.dataset.key=item.style+'_'+item.char;
+d.innerHTML='<img src="'+item.url+'" alt=""><div class="badge">+</div>';
+d.onclick=()=>{
+if(S.selected.has(d.dataset.key)){S.selected.delete(d.dataset.key);d.classList.remove('sel');d.querySelector('.badge').textContent='+'}
+else{S.selected.add(d.dataset.key);d.classList.add('sel');d.querySelector('.badge').textContent='✓'}
+document.getElementById('selCount').textContent=S.selected.size;
+document.getElementById('genBD').disabled=S.selected.size<5;
+};
+g.appendChild(d);
+}
+
+const $=id=>document.getElementById(id);
+$('saveKey').onclick=saveKey;
+$('genMatrix').onclick=generateMatrix;
+$('stopMatrix').onclick=()=>{S.stop=true;log('Arrêt demandé','warn')};
+</script><script>
+// ═══════════════════════════════════════════════════════════════
+// BD EN SÉRIE
+// ═══════════════════════════════════════════════════════════════
+
+async function buildBD() {
+  if (S.selected.size < 5) { toast('Sélectionnez au moins 5 images','err'); return; }
+  const selected = S.matrix.filter(m => S.selected.has(m.style + '_' + m.char));
+  const refImages = selected.slice(0, 5);
+
+  S.currentEpisode++;
+  const seriesTitle = $('seriesTitle').value || 'Ma Série BD';
+  const epTitle = seriesTitle + ' — Épisode ' + S.currentEpisode;
+
+  log('════════════════════════', 'api');
+  log('Épisode ' + S.currentEpisode + ' : ' + refImages.length + ' cases', 'ok');
+  setStatus('Génération de l\'épisode ' + S.currentEpisode + '…');
+
+  // 1. Utiliser les 5 images comme cases de BD
+  const cases = refImages.map(m => ({ url: m.url, style: m.styleName, char: m.charName }));
+
+  // 2. Générer un titre + dialogues pour la planche via l'IA texte
+  let narrative = { title: epTitle, lines: [] };
+  try {
+    const prompt = 'Tu es scénariste de BD. À partir de ces ' + cases.length + ' images avec ces personnages : ' +
+      cases.map(c => c.char).join(', ') +
+      '. Écris un titre court et ' + cases.length + ' dialogues courts (max 12 mots chacun, un par case) pour raconter une mini-histoire. JSON : {"title":"...","lines":["...","...","...","...","..."]}';
+    const raw = await callText([
+      { role: 'system', content: 'Tu réponds UNIQUEMENT en JSON valide.' },
+      { role: 'user', content: prompt }
+    ], { temp: 0.9, max: 1000 });
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (match) {
+      const parsed = JSON.parse(match[0]);
+      if (parsed.title) narrative.title = parsed.title;
+      if (parsed.lines) narrative.lines = parsed.lines;
+    }
+  } catch (e) {
+    log('Texte BD indisponible : ' + e.message, 'warn');
+  }
+
+  // 3. Ajouter à la série
+  const episode = {
+    num: S.currentEpisode,
+    title: narrative.title,
+    cases,
+    lines: narrative.lines,
+    ts: Date.now()
+  };
+  S.series.push(episode);
+
+  renderEpisodes();
+  renderHistory();
+  document.getElementById('bdResultCard').style.display = 'block';
+  document.getElementById('historyCard').style.display = 'block';
+  S.bdImages = cases;
+  setStatus('Épisode ' + S.currentEpisode + ' prêt');
+  toast('Épisode ' + S.currentEpisode + ' créé','ok',3000);
+  log('Épisode ' + S.currentEpisode + ' prêt : ' + narrative.title,'ok');
+}
+
+function renderEpisodes() {
+  const box = document.getElementById('bdResult');
+  box.innerHTML = S.series.map(ep => {
+    let h = '<div class="ep"><strong>Épisode ' + ep.num + ' — ' + esc(ep.title) + '</strong>';
+    h += '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:6px">';
+    ep.cases.forEach((c, i) => {
+      h += '<div style="text-align:center">';
+      h += '<img src="' + c.url + '" style="width:100%;border-radius:4px;aspect-ratio:9/16;object-fit:cover">';
+      if (ep.lines[i]) h += '<div style="font-size:0.62rem;color:var(--y);margin-top:3px;font-style:italic">« ' + esc(ep.lines[i]) + ' »</div>';
+      h += '</div>';
+    });
+    h += '</div></div>';
+    return h;
+  }).join('');
+}
+
+function renderHistory() {
+  const box = document.getElementById('historyList');
+  box.innerHTML = S.series.map(ep =>
+    '<div class="ep"><strong>Ép. ' + ep.num + '</strong> — ' + esc(ep.title) + ' · ' + ep.cases.length + ' cases · ' + new Date(ep.ts).toLocaleString('fr-FR') + '</div>'
+  ).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// VIDÉOS 15 SECONDES
+// ═══════════════════════════════════════════════════════════════
+
+async function buildVideos() {
+  if (!S.bdImages.length) { toast('Aucune image BD','err'); return; }
+  if (S.running) return;
+  S.running = true; S.stop = false;
+  document.getElementById('genVideos').disabled = true;
+
+  const episodes = S.series[S.series.length - 1];
+  const cases = episodes.cases;
+
+  log('════════════════════════', 'api');
+  log('Génération de ' + cases.length + ' vidéos de 15 secondes', 'ok');
+  setStatus('Création des vidéos (5 × 15s)…');
+
+  const videos = [];
+
+  for (let i = 0; i < cases.length - 1; i++) {
+    if (S.stop) break;
+    const first = cases[i].url;
+    const last = cases[i + 1].url;
+    const dialogue = episodes.lines[i] || '';
+    const prompt = [
+      'ONE SINGLE CONTINUOUS SHOT. NO CUTS.',
+      'Smooth interpolation between the first and last keyframe.',
+      'Style: ' + cases[i].style,
+      'Character: ' + cases[i].char,
+      dialogue ? 'Dialogue: ' + cases[i].char + ' says "' + dialogue + '"' : '',
+      'Portrait 9:16 vertical, 24fps, no text, no watermarks.'
+    ].filter(Boolean).join('. ');
+
+    try {
+      log('Vidéo ' + (i + 1) + '/' + (cases.length - 1) + ' — création tâche…','api');
+      const videoId = await createVideo(first, last, prompt, 360);
+      log('Vidéo ' + (i + 1) + ' — tâche : ' + videoId,'ok');
+      setStatus('Vidéo ' + (i + 1) + ' — en cours…');
+
+      const url = await pollVideo(videoId, (prog) => setStatus('Vidéo ' + (i + 1) + ' — ' + prog));
+      videos.push({ url, scene: i + 1, dialogue });
+      log('Vidéo ' + (i + 1) + ' terminée : ' + url.slice(0, 60) + '…','ok');
+    } catch (e) {
+      if (e.message === 'Arrêt demandé') break;
+      log('Vidéo ' + (i + 1) + ' échec : ' + e.message,'err');
+    }
+
+    if (i < cases.length - 2 && !S.stop) {
+      for (let r = 62; r > 0; r--) {
+        if (S.stop) break;
+        setStatus('Pause — prochaine vidéo dans ' + r + 's');
+        await sleep(1000);
+      }
+    }
+  }
+
+  S.videos = videos;
+  renderVideos();
+  S.running = false;
+  document.getElementById('genVideos').disabled = false;
+  setStatus(videos.length + ' vidéos générées');
+  toast(videos.length + ' vidéos prêtes','ok',3500);
+}
+
+function renderVideos() {
+  const box = document.getElementById('bdResult');
+  const vhtml = S.videos.map(v =>
+    '<div style="margin-top:8px"><div style="font-size:0.7rem;color:var(--y);margin-bottom:4px">Vidéo scène ' + v.scene + (v.dialogue ? ' — « ' + esc(v.dialogue) + ' »' : '') + '</div>' +
+    '<video src="' + v.url + '" controls playsinline style="width:100%;border-radius:6px;border:1px solid var(--border)"></video></div>'
+  ).join('');
+  box.innerHTML += '<div style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border)">' + vhtml + '</div>';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BOUTONS
+// ═══════════════════════════════════════════════════════════════
+
+$('genBD').onclick = buildBD;
+$('genVideos').onclick = buildVideos;
+$('nextEpisode').onclick = () => {
+  S.selected.clear();
+  document.querySelectorAll('.tc.sel').forEach(el => { el.classList.remove('sel'); el.querySelector('.badge').textContent = '+'; });
+  document.getElementById('selCount').textContent = '0';
+  document.getElementById('genBD').disabled = true;
+  document.getElementById('bdResultCard').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  toast('Sélectionnez 5 nouvelles images pour l\'épisode ' + (S.currentEpisode + 1),'ok',3500);
+};
+
+// ═══════════════════════════════════════════════════════════════
+// INITIALISATION
+// ═══════════════════════════════════════════════════════════════
+
+(function init(){
+  updateKeyUI();
+  renderStyles();
+  renderChars();
+  updateBtn();
+  log('Matrix Studio Série prêt','ok');
+  log('Sélectionnez des styles et personnages, puis lancez la matrice','api');
+})();
+</script>
+
+</body>
+</html>
